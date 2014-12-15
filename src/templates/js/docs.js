@@ -5,7 +5,7 @@ var docsApp = {
 };
 
 
-docsApp.directive.ngHtmlWrapLoaded = function(reindentCode, templateMerge, loadedUrls) {
+docsApp.directive.ngHtmlWrapLoaded = function(reindentCode, templateMerge) {
   function escape(text) {
     return text.
       replace(/\&/g, '&amp;').
@@ -31,19 +31,15 @@ docsApp.directive.ngHtmlWrapLoaded = function(reindentCode, templateMerge, loade
           },
         html = "<!doctype html>\n<html ng-app{{module}}>\n  <head>\n{{head:4}}  </head>\n  <body>\n{{body:4}}  </body>\n</html>";
 
-      angular.forEach(loadedUrls.base, function(dep) {
-        properties.head += '<script src="' + dep + '"></script>\n';
-      });
-
       angular.forEach((attr.ngHtmlWrapLoaded || '').split(' '), function(dep) {
         if (!dep) return;
         var ext = dep.split(/\./).pop();
 
         if (ext == 'css') {
           properties.head += '<link rel="stylesheet" href="' + dep + '" type="text/css">\n';
-        } else if(ext == 'js' && dep !== 'angular.js') {
-          properties.head += '<script src="' + (loadedUrls[dep] || dep) + '"></script>\n';
-        } else if (dep !== 'angular.js') {
+        } else if(ext == 'js') {
+          properties.head += '<script src="' + (dep) + '"></script>\n';
+        } else {
           properties.module = '="' + dep + '"';
         }
       });
@@ -109,29 +105,6 @@ docsApp.directive.sourceEdit = function(getEmbeddedTemplate) {
   }
 };
 
-
-docsApp.serviceFactory.loadedUrls = function($document) {
-  var urls = {};
-
-  angular.forEach($document.find('script'), function(script) {
-    var match = script.src.match(/^.*\/([^\/]*\.js)$/);
-    if (match) {
-      urls[match[1].replace(/(\-\d.*)?(\.min)?\.js$/, '.js')] = match[0];
-    }
-  });
-
-  urls.base = [];
-  angular.forEach(NG_DOCS.scripts, function(script) {
-    var match = urls[script.replace(/(\-\d.*)?(\.min)?\.js$/, '.js')];
-    if (match) {
-      urls.base.push(match);
-    }
-  });
-
-  return urls;
-};
-
-
 docsApp.serviceFactory.formPostData = function($document) {
   return function(url, fields) {
     var form = angular.element('<form style="display: none;" method="post" action="' + url + '" target="_blank"></form>');
@@ -146,7 +119,7 @@ docsApp.serviceFactory.formPostData = function($document) {
   };
 };
 
-docsApp.serviceFactory.openPlunkr = function(templateMerge, formPostData, loadedUrls) {
+docsApp.serviceFactory.openPlunkr = function(templateMerge, formPostData) {
   return function(content) {
     var allFiles = [].concat(content.deps, content.js, content.css, content.html);
     var indexHtmlContent = '<!doctype html>\n' +
@@ -159,9 +132,6 @@ docsApp.serviceFactory.openPlunkr = function(templateMerge, formPostData, loaded
         '  </body>\n' +
         '</html>\n';
     var scriptDeps = '';
-    // angular.forEach(loadedUrls.base, function(url) {
-    //     scriptDeps += '    <script src="' + url + '"></script>\n';
-    // });
     angular.forEach(allFiles, function(file) {
       var ext = file.name.split(/\./).pop();
         if (ext == 'css') {

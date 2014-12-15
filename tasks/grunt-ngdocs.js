@@ -20,33 +20,27 @@ module.exports = function(grunt) {
         done = this.async(),
         options = this.options({
           dest: 'docs/',
-          startPage: '/api',
           scripts: [],
           styles: [],
           example: {},
-          title: grunt.config('pkg') ?
-            (grunt.config('pkg').title || grunt.config('pkg').name) :
-            '',
+          editExample: true,
+          startPage: '/api',
+          title: grunt.config('pkg') ? (grunt.config('pkg').title || grunt.config('pkg').name) : '',
+          titleLink: '/docs',
           html5Mode: true,
-          editExample: true
+          sections: {},
         }),
-        section = this.target === 'all' ? 'api' : this.target,
         setup;
 
+    //Copy the scripts and styles into their own folder in docs, unless they are remote
     var httpPattern = /^((https?:)?\/\/|\.\.\/)/;
-
-    //Copy the scripts into their own folder in docs, unless they are remote or default angular.js
     var gruntScriptsFolder = 'grunt-scripts';
 
     options.scripts = _.map(options.scripts, function(file) {
-      if (file === 'angular.js') {
-        return 'js/angular.js';
-      }
-
       if (httpPattern.test(file)) {
         return file;
       } else {
-        return copyWithPath(file, gruntScriptsFolder, options.dest);
+        return copyWithPath(file, 'js', options.dest);
       }
     });
 
@@ -65,27 +59,31 @@ module.exports = function(grunt) {
       }
     });
 
-    setup = prepareSetup(section, options);
-
-    grunt.log.writeln('Generating Documentation...');
-
+    setup = prepareSetup(null, options);
     reader.docs = [];
-    this.files.forEach(function(f) {
-      setup.sections[section] = f.title || 'API Documentation';
-      setup.apis[section] = f.api || section == 'api';
-      f.src.filter(exists).forEach(function(filepath) {
-        var content = grunt.file.read(filepath);
-        reader.process(content, filepath, section, options);
+
+    for (var section in options.sections) {
+      var files = grunt.file.expand(options.sections[section].src);
+
+      grunt.log.writeln('Section: ' + section.cyan);
+      grunt.verbose.writeln('Files:', grunt.log.wordlist(files));
+
+      files.forEach(function(f) {
+
+        setup.sections[section] = options.sections[section].title || 'API Documentation';
+        setup.apis[section] = options.sections[section].api || section == 'api';
+        if (exists(f)) {
+          var content = grunt.file.read(f);
+          reader.process(content, f, section, options);
+        }
       });
-    });
+    }
 
     ngdoc.merge(reader.docs);
-
     reader.docs.forEach(function(doc){
 
-      // this hack is here because on OSX angular.module and angular.Module map to the same file.
-      var id = doc.id.replace('angular.Module', 'angular.IModule').replace(':', '.'),
-          file = path.resolve(options.dest, 'partials', doc.section, id + '.html');
+      var id = doc.id;
+      var file = path.resolve(options.dest, 'partials', doc.section, id + '.html');
 
       grunt.file.write(file, doc.html());
 
@@ -107,9 +105,10 @@ module.exports = function(grunt) {
       options.navContent = '';
     }
 
+
     writeSetup(setup);
 
-    grunt.log.writeln('DONE. Generated ' + reader.docs.length + ' pages in ' + (now()-start) + 'ms.');
+    grunt.log.ok('Generated ' + reader.docs.length + ' pages in ' + (now()-start) + 'ms.');
     done();
   });
 
@@ -118,16 +117,16 @@ module.exports = function(grunt) {
     return path.join(dest, src);
   }
 
-  function prepareSetup(section, options) {
+  function prepareSetup(sections, options) {
     var setup, data, context = {},
         file = path.resolve(options.dest, 'js/docs-setup.js');
-    if (exists(file)) {
+    if (sections && sections.length && exists(file)) {
       // read setup from file
       data = grunt.file.read(file),
       vm.runInNewContext(data, context, file);
       setup = context.NG_DOCS;
       // keep only pages from other build tasks
-      setup.pages = _.filter(setup.pages, function(p) {return p.section !== section;});
+      setup.pages = _.filter(setup.pages, function(p) {return sections.indexOf(p.section) !== -1;});
     } else {
       // build clean dest
       setup = {sections: {}, pages: [], apis: {}};

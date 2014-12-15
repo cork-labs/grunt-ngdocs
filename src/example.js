@@ -19,6 +19,7 @@ function ids(list) {
 exports.Example = function(scenarios) {
   this.module = '';
   this.filename = '';
+  this.depsBaseUrl = '';
   this.commonDeps = [];
   this.deps = [];
   this.html = [];
@@ -37,6 +38,12 @@ exports.Example.prototype.setFilename = function(filename) {
 exports.Example.prototype.setModule = function(module) {
   if (module) {
     this.module = module;
+  }
+};
+
+exports.Example.prototype.setDepsBaseUrl = function(depsBaseUrl) {
+  if (depsBaseUrl) {
+    this.depsBaseUrl = depsBaseUrl;
   }
 };
 
@@ -114,6 +121,13 @@ exports.Example.prototype.toHtml = function() {
 exports.Example.prototype.toHtmlEdit = function() {
   var out = [];
   var deps = _.uniq(this.commonDeps.concat(this.deps));
+
+  for (var ix = 0; ix < deps.length; ix ++) {
+    if (!deps[ix].match('//')) {
+      deps[ix] = this.depsBaseUrl + deps[ix];
+    }
+  }
+
   out.push('<div source-edit="' + this.module + '"');
   out.push(' source-edit-deps="' + deps.join(' ') + '"');
   out.push(' source-edit-html="' + ids(this.html) + '"');
@@ -145,11 +159,17 @@ exports.Example.prototype.toHtmlTabs = function() {
       var wrap = '',
           isCss = source.name.match(/\.css$/),
           name = source.name,
-          js;
+          deps;
 
       if (name === 'index.html') {
-        js = self.commonDeps.concat(self.deps, _.pluck(self.js, 'name'));
-        wrap = ' ng-html-wrap-loaded="' + self.module + ' ' + js.join(' ') + '"';
+        deps = _.uniq(self.commonDeps.concat(self.deps));
+        for (var ix = 0; ix < deps.length; ix ++) {
+          if (!deps[ix].match('//')) {
+            deps[ix] = self.depsBaseUrl + deps[ix];
+          }
+        }
+        deps = deps.concat(_.pluck(self.js, 'name'), _.pluck(self.css, 'name'));
+        wrap = ' ng-html-wrap-loaded="' + self.module + ' ' + deps.join(' ') + '"';
       }
       if (name == 'scenario.js') name = 'End to end test';
 
@@ -179,12 +199,19 @@ exports.Example.prototype.toEmbedConfig = function() {
 
   if (this.module || this.html || this.js) {
 
-    var scripts = _.filter(this.deps, function (dep) {
+    var deps = _.uniq(this.commonDeps.concat(this.deps));
+    for (var ix = 0; ix < deps.length; ix ++) {
+      if (!deps[ix].match('//')) {
+        deps[ix] = this.depsBaseUrl + deps[ix];
+      }
+    }
+
+    var scripts = _.filter(deps, function (dep) {
       if (dep.match(/\.js$/)) {
         return true;
       }
     });
-    var styles = _.filter(this.deps, function (dep) {
+    var styles = _.filter(deps, function (dep) {
       if (dep.match(/\.css$/)) {
         return true;
       }

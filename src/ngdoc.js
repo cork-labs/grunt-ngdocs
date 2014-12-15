@@ -220,6 +220,7 @@ Doc.prototype = {
           }
 
           example.setModule(module);
+          example.setDepsBaseUrl(self.options.example.baseUrl ? self.options.example.baseUrl : null);
           example.setHeight(height);
 
           self.options.example.scripts.forEach(function(script) {
@@ -275,6 +276,7 @@ Doc.prototype = {
           }
 
           example.setModule(module);
+          example.setDepsBaseUrl(self.options.example.baseUrl ? self.options.example.baseUrl : null);
           example.setHeight(height);
 
           self.options.example.scripts.forEach(function(script) {

@@ -1,9 +1,6 @@
 <!doctype html>
 <html>
 <head>
-  <% _.forEach(config.styles, function(url) { %>
-    <link rel="stylesheet" type="text/css" href="<%= url %>" />
-  <% }); %>
   <% _.forEach(styles, function(url) { %>
     <link rel="stylesheet" type="text/css" href="<%= url %>" />
   <% }); %>
@@ -19,9 +16,6 @@
     <%= html.content %>
   <% }); %>
 
-  <% _.forEach(config.scripts, function(url) { %>
-    <script type="text/javascript" src="<%= url %>"></script>
-  <% }); %>
   <% _.forEach(scripts, function(url) { %>
     <script type="text/javascript" src="<%= url %>"></script>
   <% }); %>
