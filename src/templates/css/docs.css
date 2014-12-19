@@ -306,3 +306,7 @@ ul.events > li > h3 {
   border: 0;
   width: 100%;
 }
+
+.versions {
+  margin: 5px;
+}

@@ -103,6 +103,7 @@
           <% if (title) {%>
             <a <% if (titleLink) { %> href="<%= titleLink %>" <% } %> class="brand"><%= title %></a>
           <% } %>
+          <div versions></div>
           <ul class="nav">
             <li ng-repeat="(url, name) in sections" ng-class="{active: isActivePath(url)}">
               <a ng-href="{{url}}"><i class="icon-book icon-white"></i> {{name}}</a>

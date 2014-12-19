@@ -196,6 +196,25 @@ docsApp.serviceFactory.sections = function serviceFactory() {
 };
 
 
+docsApp.directive.versions = function($http) {
+  return {
+    template: '<select class="versions pull-left" ng-change="selectVersion()" ng-model="currentVersion" ng-options="version.version for version in versions"></select>',
+    link: function($scope, element, attr) {
+      $http.get(NG_DOCS.versions.endpoint).then(function (response) {
+          $scope.versions = response.data;
+          for (var ix = 0; ix < response.data.length; ix++) {
+            if (response.data[ix].version === NG_DOCS.versions.current) {
+              $scope.currentVersion = response.data[ix];
+            }
+          }
+      });
+      $scope.selectVersion = function () {
+        // @todo redirect
+      }
+    }
+  };
+};
+
 docsApp.controller.DocsController = function($scope, $location, $window, sections) {
   var INDEX_PATH = /^(\/|\/index[^\.]*.html)$/,
       GLOBALS = /^angular\.([^\.]+)$/,

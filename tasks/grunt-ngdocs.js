@@ -140,6 +140,7 @@ module.exports = function(grunt) {
   function writeSetup(setup) {
     var options = setup.__options,
         content, data = {
+          versions: options.versions,
           scripts: options.scripts,
           styles: options.styles,
           example: options.example,
@@ -166,7 +167,9 @@ module.exports = function(grunt) {
     setup.startPage = options.startPage;
     setup.discussions = options.discussions;
     setup.scripts = _.map(options.scripts, function(url) { return path.basename(url); });
-    setup.example = setup.example,
+    setup.example = setup.example;
+    setup.versions = options.versions;
+    setup.versions.current = grunt.config('pkg').version;
     grunt.file.write(setup.__file, 'NG_DOCS=' + JSON.stringify(setup, replacer, 2) + ';');
   }
 
