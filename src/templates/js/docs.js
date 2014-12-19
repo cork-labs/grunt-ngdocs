@@ -196,7 +196,7 @@ docsApp.serviceFactory.sections = function serviceFactory() {
 };
 
 
-docsApp.directive.versions = function($http) {
+docsApp.directive.versions = function($http, $window, $location) {
   return {
     template: '<select class="versions pull-left" ng-change="selectVersion()" ng-model="currentVersion" ng-options="version.version for version in versions"></select>',
     link: function($scope, element, attr) {
@@ -209,7 +209,14 @@ docsApp.directive.versions = function($http) {
           }
       });
       $scope.selectVersion = function () {
-        // @todo redirect
+        var url = $scope.currentVersion.url;
+        if ($location.$$html5) {
+           url += $location.path();
+        }
+        else {
+          url += '/#' + $location.path();
+        }
+        $window.location.href = url;
       }
     }
   };

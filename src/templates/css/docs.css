@@ -24,6 +24,10 @@ img.AngularJS-small {
   padding: 10px 20px 10px 10px;
 }
 
+.navbar .versions {
+  margin: 5px 30px 5px 5px;
+}
+
 .clear-navbar {
   margin-top: 60px;
 }
