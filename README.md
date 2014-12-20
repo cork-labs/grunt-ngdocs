@@ -1,10 +1,19 @@
 #grunt-ngdocs
-Grunt plugin to create a documentation like [AngularJS](http://docs.angularjs.org)
-NOTE: this plugin requires Grunt 0.4.x
 
-ATTENTION: grunt-ngdocs 0.2+ is for angularjs 1.2+
-grunt-ngdocs 0.2.5 supports angularjs 1.3+ too
-Please include angular.js and angular-animate.js with the scripts option
+Grunt plugin to create a documentation like [AngularJS](http://docs.angularjs.org)
+
+__NOTE:__ Forked from [https://github.com/m7r/grunt-ngdocs](https://github.com/m7r/grunt-ngdocs) and implemented the following:
+
+- examples always served via `iframe`
+- added height attribute to allow users to set the iframe height
+- normalized `@example` and `<doc:example>`, both support setting `module`, `deps` and `height`
+- example dependencies (scripts/styles) no longer copied to target directory
+- example dependencies now have a configurable `baseUrl`
+- optional version selector, sets current version from `config('pkg').version` and loads available versions via XHR.
+- section objects as defined in grunt options are availble in the frontend
+- supports ordering sections by setting `.priority`
+- always builds all sections, sections no longer defined as grunt targets
+
 
 ##Getting Started
 From the same directory as your project's Gruntfile and package.json, install this plugin with the following command:
