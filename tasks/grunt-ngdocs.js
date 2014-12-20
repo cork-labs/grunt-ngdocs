@@ -62,16 +62,22 @@ module.exports = function(grunt) {
     setup = prepareSetup(null, options);
     reader.docs = [];
 
-    for (var section in options.sections) {
-      var files = grunt.file.expand(options.sections[section].src);
+    setup.sections = options.sections
+    for (var section in setup.sections) {
+      var files = grunt.file.expand(setup.sections[section].src);
 
       grunt.log.writeln('Section: ' + section.cyan);
       grunt.verbose.writeln('Files:', grunt.log.wordlist(files));
 
-      files.forEach(function(f) {
+      if (!setup.sections[section].title) {
+        setup.sections[section].title = 'API Documentation';
+      }
+      if (section === 'api') {
+        setup.sections[section].api = true;
+      }
+      setup.apis[section] = !!setup.sections[section].api;
 
-        setup.sections[section] = options.sections[section].title || 'API Documentation';
-        setup.apis[section] = options.sections[section].api || section == 'api';
+      files.forEach(function(f) {
         if (exists(f)) {
           var content = grunt.file.read(f);
           reader.process(content, f, section, options);
@@ -79,10 +85,12 @@ module.exports = function(grunt) {
       });
     }
 
+    grunt.verbose.writeln('Pages:', grunt.log.wordlist(_.pluck(reader.docs, 'id')));
+
     ngdoc.merge(reader.docs);
     reader.docs.forEach(function(doc){
 
-      var id = doc.id;
+      var id = doc.id.replace(':', '.');
       var file = path.resolve(options.dest, 'partials', doc.section, id + '.html');
 
       grunt.file.write(file, doc.html());
@@ -104,7 +112,6 @@ module.exports = function(grunt) {
     } else {
       options.navContent = '';
     }
-
 
     writeSetup(setup);
 
@@ -170,6 +177,7 @@ module.exports = function(grunt) {
     setup.example = setup.example;
     setup.versions = options.versions;
     setup.versions.current = grunt.config('pkg').version;
+
     grunt.file.write(setup.__file, 'NG_DOCS=' + JSON.stringify(setup, replacer, 2) + ';');
   }
 

@@ -165,20 +165,8 @@ docsApp.serviceFactory.openPlunkr = function(templateMerge, formPostData) {
 
 
 docsApp.serviceFactory.sections = function serviceFactory() {
-  var sections = {
-    getPage: function(sectionId, partialId) {
-      var pages = sections[sectionId];
 
-      partialId = partialId || 'index';
-
-      for (var i = 0, ii = pages.length; i < ii; i++) {
-        if (pages[i].id == partialId) {
-          return pages[i];
-        }
-      }
-      return null;
-    }
-  };
+  var sections = angular.copy(NG_DOCS.sections);
 
   angular.forEach(NG_DOCS.pages, function(page) {
     var url = page.section + '/' +  page.id;
@@ -188,9 +176,22 @@ docsApp.serviceFactory.sections = function serviceFactory() {
       page.partialUrl = 'partials/' + url.replace(':', '.') + '.html';
     }
     page.url = (NG_DOCS.html5Mode ? '' : '#/') + url;
-    if (!sections[page.section]) { sections[page.section] = []; }
-    sections[page.section].push(page);
+    if (!sections[page.section].pages) { sections[page.section].pages = []; }
+    sections[page.section].pages.push(page);
   });
+
+  sections.getPage = function(sectionId, partialId) {
+    var pages = sections[sectionId].pages;
+
+    partialId = partialId || 'index';
+
+    for (var i = 0, ii = pages.length; i < ii; i++) {
+      if (pages[i].id == partialId) {
+        return pages[i];
+      }
+    }
+    return null;
+  };
 
   return sections;
 };
@@ -272,20 +273,25 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
     loadDisqus(currentPageId);
   };
 
+  $scope.sections = [];
+  angular.forEach(NG_DOCS.sections, function(section, url) {
+    var s = angular.copy(section);
+    s.url = (NG_DOCS.html5Mode ? '' : '#/') + url;
+    $scope.sections.push(s);
+  });
+  // order by section priority
+  $scope.sections.sort(function (s1, s2) {
+    return s1.priority > s2.priority;
+  });
 
   /**********************************
    Watches
    ***********************************/
-
-  $scope.sections = {};
-  angular.forEach(NG_DOCS.sections, function(section, url) {
-    $scope.sections[(NG_DOCS.html5Mode ? '' : '#/') + url] = section;
-  });
   $scope.$watch(function docsPathWatch() {return $location.path(); }, function docsPathWatchAction(path) {
     var parts = path.split('/'),
       sectionId = parts[1],
       partialId = parts[2],
-      page, sectionName = $scope.sections[(NG_DOCS.html5Mode ? '' : '#/') + sectionId];
+      page, sectionName = sections[sectionId].title;
 
     if (!sectionName) { return; }
 
@@ -376,7 +382,7 @@ docsApp.controller.DocsController = function($scope, $location, $window, section
 
   function updateSearch() {
     var cache = {},
-        pages = sections[$location.path().split('/')[1]],
+        pages = sections[$location.path().split('/')[1]].pages,
         modules = $scope.modules = [],
         otherPages = $scope.pages = [],
         search = $scope.search,
