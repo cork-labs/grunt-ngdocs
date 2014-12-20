@@ -22,7 +22,10 @@ module.exports = function(grunt) {
           dest: 'docs/',
           scripts: [],
           styles: [],
-          example: {},
+          versionsEndpoint: null,
+          examplesBaseUrl: [],
+          examplesScripts: [],
+          examplesStyles: [],
           editExample: true,
           startPage: '/api',
           title: grunt.config('pkg') ? (grunt.config('pkg').title || grunt.config('pkg').name) : '',
@@ -31,6 +34,16 @@ module.exports = function(grunt) {
           sections: {},
         }),
         setup;
+
+    // unflatten options
+    options.versions = {
+      endpoint: options.versionsEndpoint
+    };
+    options.example = {
+      baseUrl: options.examplesBaseUrl,
+      scripts: options.examplesScripts,
+      styles: options.examplesStyles
+    };
 
     //Copy the scripts and styles into their own folder in docs, unless they are remote
     var httpPattern = /^((https?:)?\/\/|\.\.\/)/;
