@@ -1,3 +1,7 @@
+body {
+  line-height: 22px;
+}
+
 img.AngularJS-small {
   width: 95px;
   height: 25px;
@@ -70,12 +74,8 @@ img.AngularJS-small {
 }
 
 .form-search .code {
-  font-family: monospace;
-  font-weight: bold;
-  font-size: 13px;
-  color: black;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: #4c4c4c;
+  padding: 3px 6px;
 }
 
 .form-search > ul.nav > li > a {
@@ -150,23 +150,14 @@ img.AngularJS-small {
 /*            Content              */
 /* =============================== */
 
-.improve-docs {
-  float: right;
-}
-
 .hint {
-  font-size: .6em;
-  color: #c0c0c0;
-  display: block;
+  font-size: 16px;
+  color: #999;
 }
 
 .content code {
-  background-color: inherit;
-  color: inherit;
-  border: none;
-  padding: 0;
-  font-size: inherit;
-  font-family: monospace;
+  padding: 3px 6px;
+  color: #424242;
 }
 
 .content h2,
@@ -320,3 +311,5 @@ ul.events > li > h3 {
 .versions {
   margin: 5px;
 }
+
+
