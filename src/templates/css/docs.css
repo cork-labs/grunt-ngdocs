@@ -28,6 +28,12 @@ img.AngularJS-small {
   margin: 5px 30px 5px 5px;
 }
 
+.navbar .nav li i {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+}
+
 .clear-navbar {
   margin-top: 60px;
 }

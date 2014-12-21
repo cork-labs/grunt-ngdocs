@@ -106,7 +106,7 @@
           <div versions></div>
           <ul class="nav">
             <li ng-repeat="section in sections" ng-class="{active: isActivePath(section.url)}">
-              <a ng-href="{{section.url}}"><i class="icon-book icon-white"></i> {{section.title}}</a>
+              <a ng-href="{{section.url}}"><i class="icon-{{section.icon || 'book'}} icon-white"></i> {{section.title}}</a>
             </li>
           </ul>
           <%= navContent %>
