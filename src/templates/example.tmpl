@@ -9,9 +9,18 @@
   </style>
   <% _.forEach(css, function(style) { %>
     <style type="text/css"><%= style.content %></style>
+    <style type="text/css">
+    #detach {
+      display: none; position: absolute; top: 0px; right: 0px;
+      width: 20px; height: 20px;
+      text-align: center; line-height: 20px; font-size: 18px; text-decoration: none;
+      border-radius: 3px; background-color: #111; color: white;
+    }
+    </style>
   <% }); %>
 </head>
 <body ng-app="<%= module %>">
+  <a id="detach" href="#" target="_blank">&#10166;</a>
   <% _.forEach(html, function(html) { %>
     <%= html.content %>
   <% }); %>
@@ -22,5 +31,11 @@
   <% _.forEach(js, function(script) { %>
     <script type="text/javascript"><%= script.content %></script>
   <% }); %>
+    <script type="text/javascript">
+    if (document.location.href !== window.top.location.href) {
+      var detach = document.querySelector('#detach');
+      detach.style.display = 'inline-block';
+    }
+    </script>
 </body>
 </html>

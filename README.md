@@ -2,9 +2,16 @@
 
 Grunt plugin to create a documentation like [AngularJS](http://docs.angularjs.org)
 
-__NOTE:__ Forked from [https://github.com/m7r/grunt-ngdocs](https://github.com/m7r/grunt-ngdocs) and implemented the following:
+__NOTE:__ Forked from [https://github.com/m7r/grunt-ngdocs](https://github.com/m7r/grunt-ngdocs).
+
+You should be aware that `grunt-ngdocs` is not great software (understatement).
+
+Nevertheless, it does work, and AFAIK, it's the best documentation tool available for AngularJS documentation.
+
+This fork is (mostly) irreconciliable, and differs as follows:
 
 - examples always served via `iframe`
+- example `iframe` has a detach link to open in `_blank` target (very useful while developing)
 - added height attribute to allow users to set the iframe height
 - normalized `@example` and `<doc:example>`, both support setting `module`, `deps` and `height`
 - example dependencies (scripts/styles) no longer copied to target directory
@@ -13,6 +20,7 @@ __NOTE:__ Forked from [https://github.com/m7r/grunt-ngdocs](https://github.com/m
 - section objects as defined in grunt options are availble in the frontend
 - supports ordering sections by setting `.priority`
 - always builds all sections, sections no longer defined as grunt targets
+
 
 
 ##Getting Started

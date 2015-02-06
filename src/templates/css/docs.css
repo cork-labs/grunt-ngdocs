@@ -303,6 +303,10 @@ ul.events > li > h3 {
   background:rgb(189, 63, 66);
 }
 
+.example-frame.well {
+  padding: 5px;
+}
+
 .example-frame > iframe {
   border: 0;
   width: 100%;
