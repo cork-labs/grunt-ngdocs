@@ -4011,13 +4011,13 @@ function createInjector(modulesToLoad) {
    <example>
      <file name="index.html">
        <div id="scrollArea" ng-controller="ScrollCtrl">
-         <a ng-click="gotoBottom()">Go to bottom</a>
+         <a ng-click="goToBottom()">Go to bottom</a>
          <a id="bottom"></a> You're at the bottom!
        </div>
      </file>
      <file name="script.js">
        function ScrollCtrl($scope, $location, $anchorScroll) {
-         $scope.gotoBottom = function (){
+         $scope.goToBottom = function (){
            // set the location.hash to the id of
            // the element you wish to scroll to.
            $location.hash('bottom');

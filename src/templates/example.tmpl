@@ -2,40 +2,40 @@
 <html>
 <head>
   <% _.forEach(styles, function(url) { %>
-    <link rel="stylesheet" type="text/css" href="<%= url %>" />
+  <link rel="stylesheet" type="text/css" href="<%= url %>" />
   <% }); %>
   <style type="text/css">
   body { background: transparent; }
   </style>
   <% _.forEach(css, function(style) { %>
-    <style type="text/css"><%= style.content %></style>
-    <style type="text/css">
-    #detach {
-      display: none; position: absolute; top: 0px; right: 0px;
-      width: 20px; height: 20px;
-      text-align: center; line-height: 20px; font-size: 18px; text-decoration: none;
-      border-radius: 3px; background-color: #111; color: white;
-    }
-    </style>
+  <style type="text/css"><%= style.content %></style>
   <% }); %>
+  <style type="text/css">
+  #detach {
+    display: none; position: absolute; top: 0px; right: 0px;
+    width: 20px; height: 20px;
+    text-align: center; line-height: 20px; font-size: 18px; text-decoration: none;
+    border-radius: 3px; background-color: #111; color: white;
+  }
+  </style>
 </head>
 <body ng-app="<%= module %>">
   <a id="detach" href="#" target="_blank">&#10166;</a>
   <% _.forEach(html, function(html) { %>
-    <%= html.content %>
+  <%= html.content %>
   <% }); %>
 
   <% _.forEach(scripts, function(url) { %>
-    <script type="text/javascript" src="<%= url %>"></script>
+  <script type="text/javascript" src="<%= url %>"></script>
   <% }); %>
   <% _.forEach(js, function(script) { %>
-    <script type="text/javascript"><%= script.content %></script>
+  <script type="text/javascript"><%= script.content %></script>
   <% }); %>
-    <script type="text/javascript">
-    if (document.location.href !== window.top.location.href) {
-      var detach = document.querySelector('#detach');
-      detach.style.display = 'inline-block';
-    }
-    </script>
+  <script type="text/javascript">
+  if (document.location.href !== window.top.location.href) {
+    var detach = document.querySelector('#detach');
+    detach.style.display = 'inline-block';
+  }
+  </script>
 </body>
 </html>

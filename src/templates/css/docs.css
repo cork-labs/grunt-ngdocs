@@ -129,7 +129,7 @@ img.AngularJS-small {
 }
 
 .form-search .well li a:focus {
-	outline: none;
+  outline: none;
 }
 
 .form-search .well .guide {
@@ -143,12 +143,16 @@ img.AngularJS-small {
 }
 
 .match > a, .nav > .match > a:hover {
-	background-color: #dbeaf4;
+  background-color: #dbeaf4;
 }
 
 /* =============================== */
 /*            Content              */
 /* =============================== */
+
+.content {
+  padding-bottom: 40px;
+}
 
 .hint {
   font-size: 16px;
